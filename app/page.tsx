@@ -8,9 +8,11 @@ import { Progress } from "@/components/ui/progress"
 import { BookOpen, Microscope, Monitor, Trophy, Star, Play, Settings, User, Zap } from "lucide-react"
 import { SubjectWorld } from "@/components/subject-world"
 import { ChapterLesson } from "@/components/chapter-lesson"
+import { TeacherDashboard } from "@/components/teacher-dashboard"
+import { OfflineStatus, OfflineIndicator } from "@/components/offline-status"
 
 export default function EduQuestHome() {
-  const [currentView, setCurrentView] = useState<"menu" | "subjects" | "profile" | "subject-world" | "chapter-lesson">(
+  const [currentView, setCurrentView] = useState<"menu" | "subjects" | "profile" | "subject-world" | "chapter-lesson" | "teacher-dashboard">(
     "menu",
   )
   const [selectedSubject, setSelectedSubject] = useState<"history" | "science" | "computer" | null>(null)
@@ -131,9 +133,9 @@ export default function EduQuestHome() {
               <Trophy className="w-5 h-5" />
               <span className="text-sm">Progress</span>
             </Button>
-            <Button variant="outline" className="h-14 flex-col gap-1 bg-transparent">
+            <Button variant="outline" onClick={() => setCurrentView("teacher-dashboard")} className="h-14 flex-col gap-1">
               <Settings className="w-5 h-5" />
-              <span className="text-sm">Settings</span>
+              <span className="text-sm">Teacher View</span>
             </Button>
           </div>
         </div>
@@ -290,11 +292,23 @@ export default function EduQuestHome() {
     </div>
   )
 
+  const handleTeacherExport = (format: "csv" | "pdf") => {
+    console.log(`[v0] Exporting data as ${format}`)
+    // In production, this would trigger actual export functionality
+    alert(`Export as ${format.toUpperCase()} - Feature coming soon!`)
+  }
+
   return (
     <>
       {currentView === "menu" && <MainMenu />}
       {currentView === "subjects" && <SubjectSelection />}
       {currentView === "profile" && <ProfileView />}
+      {currentView === "teacher-dashboard" && (
+        <TeacherDashboard
+          onBack={() => setCurrentView("menu")}
+          onExport={handleTeacherExport}
+        />
+      )}
       {currentView === "subject-world" && selectedSubject && (
         <SubjectWorld
           subjectId={selectedSubject}
@@ -310,6 +324,7 @@ export default function EduQuestHome() {
           onComplete={handleChapterComplete}
         />
       )}
+      <OfflineIndicator />
     </>
   )
 }
