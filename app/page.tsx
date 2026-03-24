@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -10,8 +11,17 @@ import { SubjectWorld } from "@/components/subject-world"
 import { ChapterLesson } from "@/components/chapter-lesson"
 import { TeacherDashboard } from "@/components/teacher-dashboard"
 import { OfflineStatus, OfflineIndicator } from "@/components/offline-status"
+import { useAuth } from "@/lib/auth-context"
 
 export default function EduQuestHome() {
+  const router = useRouter()
+  const { isAuthenticated, isLoading } = useAuth()
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      router.push('/login')
+    }
+  }, [isLoading, isAuthenticated, router])
   const [currentView, setCurrentView] = useState<"menu" | "subjects" | "profile" | "subject-world" | "chapter-lesson" | "teacher-dashboard">(
     "menu",
   )
