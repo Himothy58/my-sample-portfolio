@@ -47,25 +47,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const refreshUser = async () => {
     try {
-      console.log('[v0] Checking authentication...')
       const response = await fetch('/api/auth/me', {
         credentials: 'include', // Send cookies with request
         cache: 'no-store', // Don't cache auth responses
       })
       if (response.ok) {
         const data = await response.json()
-        console.log('[v0] Auth valid, user:', data.user)
         setUser(data.user)
         if (data.studentProfile) {
           setStudentProfile(data.studentProfile)
         }
       } else {
-        console.log('[v0] Auth invalid, no authenticated user')
         setUser(null)
         setStudentProfile(null)
       }
     } catch (error) {
-      console.error('[v0] Failed to refresh user:', error)
+      console.error('Failed to refresh user:', error)
       setUser(null)
       setStudentProfile(null)
     } finally {
@@ -76,7 +73,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (email: string, password: string) => {
     setIsLoading(true)
     try {
-      console.log('[v0] Login attempt for:', email)
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -90,22 +86,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       const data = await response.json()
-      console.log('[v0] Login success, user:', data.user)
-      // Store user data in state
       setUser(data.user)
       if (data.studentProfile) {
         setStudentProfile(data.studentProfile)
       }
-      // Mark loading as complete before redirect
       setIsLoading(false)
-      console.log('[v0] Redirecting to:', data.user.role === 'teacher' ? '/teacher' : '/learn')
       
       // Redirect after state is set
       setTimeout(() => {
         router.push(data.user.role === 'teacher' ? '/teacher' : '/learn')
       }, 100)
     } catch (error) {
-      console.error('[v0] Login error:', error)
+      console.error('Login error:', error)
       setIsLoading(false)
       throw error
     }
