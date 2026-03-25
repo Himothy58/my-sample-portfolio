@@ -39,19 +39,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Check if user is already logged in on mount
   useEffect(() => {
-    const checkAuth = async () => {
-      await refreshUser()
-    }
-    checkAuth()
+    refreshUser()
   }, [])
 
   const refreshUser = async () => {
     try {
-      const response = await fetch('/api/auth/me', {
-        method: 'GET',
-        credentials: 'include', // Ensure cookies are sent
-        cache: 'no-store', // Don't cache auth responses
-      })
+      const response = await fetch('/api/auth/me')
       if (response.ok) {
         const data = await response.json()
         setUser(data.user)
@@ -77,7 +70,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include', // Ensure cookies are handled
         body: JSON.stringify({ email, password }),
       })
 
@@ -91,10 +83,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (data.studentProfile) {
         setStudentProfile(data.studentProfile)
       }
-      
-      // Add a small delay to ensure the cookie is set before redirecting
-      await new Promise(resolve => setTimeout(resolve, 100))
-      
       router.push(data.user.role === 'teacher' ? '/teacher' : '/learn')
     } finally {
       setIsLoading(false)
@@ -107,7 +95,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const response = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include', // Ensure cookies are handled
         body: JSON.stringify({ email, password, name, role }),
       })
 
@@ -121,10 +108,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (data.studentProfile) {
         setStudentProfile(data.studentProfile)
       }
-      
-      // Add a small delay to ensure the cookie is set before redirecting
-      await new Promise(resolve => setTimeout(resolve, 100))
-      
       router.push(role === 'teacher' ? '/teacher' : '/learn')
     } finally {
       setIsLoading(false)

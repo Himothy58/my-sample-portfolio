@@ -29,19 +29,17 @@ export default function LearnPage() {
   const [loadingSubjects, setLoadingSubjects] = useState(true)
 
   useEffect(() => {
-    if (!isLoading) {
-      if (!user) {
-        router.push('/login')
-        return
-      }
-
-      // Fetch subjects and student progress only when user is confirmed
-      if (user) {
-        fetchSubjects()
-        getAllProgress()
-      }
+    if (!isLoading && !user) {
+      router.push('/login')
+      return
     }
-  }, [isLoading, user])
+
+    // Fetch subjects and student progress
+    if (user) {
+      fetchSubjects()
+      getAllProgress()
+    }
+  }, [isLoading, user, router, getAllProgress])
 
   const fetchSubjects = async () => {
     try {
