@@ -39,7 +39,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Check if user is already logged in on mount
   useEffect(() => {
-    refreshUser()
+    const initAuth = async () => {
+      await refreshUser()
+    }
+    initAuth()
   }, [])
 
   const refreshUser = async () => {
@@ -79,13 +82,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       const data = await response.json()
+      // Store user data in state
       setUser(data.user)
       if (data.studentProfile) {
         setStudentProfile(data.studentProfile)
       }
-      router.push(data.user.role === 'teacher' ? '/teacher' : '/learn')
-    } finally {
+      // Mark loading as complete before redirect
       setIsLoading(false)
+      
+      // Redirect after state is set
+      setTimeout(() => {
+        router.push(data.user.role === 'teacher' ? '/teacher' : '/learn')
+      }, 100)
+    } catch (error) {
+      setIsLoading(false)
+      throw error
     }
   }
 
@@ -104,13 +115,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       const data = await response.json()
+      // Store user data in state
       setUser(data.user)
       if (data.studentProfile) {
         setStudentProfile(data.studentProfile)
       }
-      router.push(role === 'teacher' ? '/teacher' : '/learn')
-    } finally {
+      // Mark loading as complete before redirect
       setIsLoading(false)
+      
+      // Redirect after state is set
+      setTimeout(() => {
+        router.push(role === 'teacher' ? '/teacher' : '/learn')
+      }, 100)
+    } catch (error) {
+      setIsLoading(false)
+      throw error
     }
   }
 

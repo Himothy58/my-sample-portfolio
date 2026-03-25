@@ -29,13 +29,14 @@ export default function LearnPage() {
   const [loadingSubjects, setLoadingSubjects] = useState(true)
 
   useEffect(() => {
+    // Only redirect if we're done loading AND there's no user
     if (!isLoading && !user) {
       router.push('/login')
       return
     }
 
-    // Fetch subjects and student progress
-    if (user) {
+    // Fetch subjects and student progress only if user is authenticated
+    if (user && !isLoading) {
       fetchSubjects()
       getAllProgress()
     }
