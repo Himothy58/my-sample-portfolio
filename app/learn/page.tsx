@@ -40,7 +40,7 @@ export default function LearnPage() {
       fetchSubjects()
       getAllProgress()
     }
-  }, [isLoading, user, router, getAllProgress])
+  }, [isLoading, user])
 
   const fetchSubjects = async () => {
     try {

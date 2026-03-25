@@ -47,7 +47,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const refreshUser = async () => {
     try {
-      const response = await fetch('/api/auth/me')
+      const response = await fetch('/api/auth/me', {
+        credentials: 'include', // Send cookies with request
+        cache: 'no-store', // Don't cache auth responses
+      })
       if (response.ok) {
         const data = await response.json()
         setUser(data.user)
@@ -73,6 +76,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include', // Send and receive cookies
         body: JSON.stringify({ email, password }),
       })
 
@@ -106,6 +110,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const response = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include', // Send and receive cookies
         body: JSON.stringify({ email, password, name, role }),
       })
 
